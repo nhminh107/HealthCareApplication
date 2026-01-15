@@ -1,2 +1,3 @@
 user_id,name,password,age,gender,blood_type,phone,role
-1,Bố,6bca434d7a4d5bbbb658e61c88cab932da916f430e24cb34cc7d963d1f87a745,50,1,A,365838470,admin
+1,Bố,e9cee71ab932fde863338d08be4de9dfe39ea049bdafb342ce659ec5450b69ae,50,1,A,365838470,admin
+2,Admin,e9cee71ab932fde863338d08be4de9dfe39ea049bdafb342ce659ec5450b69ae,0,0,A,0,admin

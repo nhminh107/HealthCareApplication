@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from data_manager import DataManagement
 from auth import authenticate
-
+from RegisterScreen import RegisterScreen
 # --- Import Model Management (Cần file modelManagement.py cùng thư mục) ---
 try:
     from modelManagement import DiabetesModel, NLPModel, HeartModel
@@ -46,15 +46,12 @@ class LoginScreen:
         user = self.entry_user.get()
         pwd = self.entry_pass.get()
 
-        # Gọi hàm authenticate từ auth.py
-        result = authenticate(user, pwd)
+        # authenticate giờ trả về 3 giá trị: status, msg, role
+        success, msg, role = authenticate(user, pwd)
 
-        # auth.py trả về True hoặc (False, Message)
-        if result == True:
-            self.on_login_success(user)  # Callback sang MainScreen
+        if success:
+            self.on_login_success(user, role)  # Truyền thêm role sang Main
         else:
-            # Xử lý trường hợp trả về tuple lỗi
-            msg = result[1] if isinstance(result, tuple) else "Sai mật khẩu"
             messagebox.showerror("Lỗi", msg)
 
 
@@ -62,11 +59,13 @@ class LoginScreen:
 # 2. MAIN SCREEN (Menu chính)
 # ==============================================================================
 class MainScreen:
-    def __init__(self, master, user_name):
+    def __init__(self, master, user_name, role):
         self.master = master
         self.user_name = user_name
         self.master.title(f"Health Dashboard - {user_name}")
         self.master.geometry("1000x600")
+        self.role = role  # Lưu role
+
 
         # Khởi tạo các instance model (chỉ load 1 lần để tối ưu)
         if MODEL_AVAILABLE:
@@ -99,14 +98,21 @@ class MainScreen:
             ("🚪 Đăng xuất", "#607D8B", self.logout)
         ]
 
-        # Grid layout cho buttons
+        if self.role == 'admin':
+            buttons.insert(0, ("⚙️ Quản lý Người dùng (Admin)", "#333333", self.open_register))
+
+            # Grid layout tự động tính toán lại
         for i, (text, color, cmd) in enumerate(buttons):
             row = i // 2
             col = i % 2
             tk.Button(
                 btn_frame, text=text, command=cmd, bg=color, fg="white",
-                font=("Helvetica", 12, "bold"), width=25, height=2
-            ).grid(row=row, column=col, padx=15, pady=15)
+                font=("Helvetica", 10, "bold"), width=28, height=2
+            ).grid(row=row, column=col, padx=10, pady=10)
+
+    def open_register(self):
+        win = tk.Toplevel(self.master)
+        RegisterScreen(win)
 
     # --- Navigation Methods ---
     def open_user_info(self):

@@ -1,5 +1,8 @@
 import tkinter as tk
 from Screen import LoginScreen, MainScreen
+import auth
+
+auth.initialize_system()
 
 
 def main():
@@ -8,15 +11,11 @@ def main():
     # Ẩn cửa sổ gốc ban đầu (nếu muốn) hoặc dùng nó làm container
     # Ở đây ta dùng root làm cửa sổ Login, sau đó switch sang Main
 
-    def on_login_success(user_name):
-        # Khi login thành công:
-        # 1. Xóa hết widget của Login
+    # main.py
+    def on_login_success(user_name, role):  # Nhận thêm role
         for widget in root.winfo_children():
             widget.destroy()
-
-        # 2. Khởi tạo Main Screen trên cùng cửa sổ root
-        # (Hoặc có thể destroy root cũ và tạo root mới, nhưng cách này mượt hơn)
-        app = MainScreen(root, user_name)
+        app = MainScreen(root, user_name, role)  # Truyền role vào Main
 
     # Khởi tạo màn hình Login
     app = LoginScreen(root, on_login_success)
